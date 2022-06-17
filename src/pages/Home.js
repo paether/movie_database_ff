@@ -1,23 +1,22 @@
-import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
-import { Search } from "@mui/icons-material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import { useCallback, useEffect, useState, useContext } from "react";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
-import { TextField } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 
 import axiosInstance from "../api";
 import MovieList from "../components/MovieList";
+import SearchBar from "../components/SearchBar";
+import { MoviesContext } from "../contexts/MoviesContext";
 
-function Home({ movieStorage, setMovieStorage, genres }) {
+function Home({ genres }) {
+  const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
+    useContext(MoviesContext);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
   const [genreFilter, setGenreFilter] = useState("");
   const [titleFilter, setTitleFilter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +27,6 @@ function Home({ movieStorage, setMovieStorage, genres }) {
 
   const getTitle = useCallback(
     async (e) => {
-      console.log("getting title");
       if (!titleFilter) return;
       try {
         setIsLoading(true);
@@ -39,28 +37,28 @@ function Home({ movieStorage, setMovieStorage, genres }) {
               info: "base_info",
               titleType: "movie",
               ...(genreFilter && { genre: genreFilter }),
-              limit: "50",
             },
           }
         );
 
-        setMovieStorage((prev) => ({
-          ...prev,
-          searchResult: resp.data.results,
-        }));
-
+        // setMovieStorage((prev) => ({
+        //   ...prev,
+        //   searchResult: resp.data.results,
+        // }));
+        // dispatch({ type: "UPDATE_SEARCH_RESULT", payload: resp.data.results });
+        updateSearchResult(resp.data.results);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
         console.log(error);
       }
     },
-    [titleFilter, genreFilter, setMovieStorage]
+    [titleFilter, genreFilter, updateSearchResult]
   );
 
-  useEffect(() => {
-    console.log(movieStorage);
-  }, [movieStorage]);
+  // useEffect(() => {
+  //   console.log(movieStorage);
+  // }, [movieStorage]);
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -86,12 +84,11 @@ function Home({ movieStorage, setMovieStorage, genres }) {
 
   function onDragEnd(result) {
     const { source, destination } = result;
-    const sInd = source.droppableId;
-    const dInd = destination.droppableId;
-
-    if (!destination) {
+    if (!destination || destination.droppableId === "searchResult") {
       return;
     }
+    const sInd = source.droppableId;
+    const dInd = destination.droppableId;
 
     // if (
     //   movieStorage[dInd] &&
@@ -103,102 +100,122 @@ function Home({ movieStorage, setMovieStorage, genres }) {
     // }
 
     if (sInd === dInd) {
-      const items = reorder(
-        movieStorage[sInd],
-        source.index,
-        destination.index
-      );
-      const newState = { ...movieStorage };
-      newState[sInd] = items;
-      setMovieStorage(newState);
+      // const items = reorder(
+      //   movieStorage[sInd],
+      //   source.index,
+      //   destination.index
+      // );
+      // const newState = { ...movieStorage };
+      // newState[sInd] = items;
+      // setMovieStorage(newState);
+      reorderCards(sInd, source.index, destination.index);
+      // dispatch({
+      //   type: "REORDER_CARDS",
+      //   payload: {
+      //     sourceIndex: sInd,
+      //     startIndex: source.index,
+      //     endIndex: destination.index,
+      //   },
+      // });
     } else {
-      const result = move(
-        movieStorage[sInd],
-        movieStorage[dInd],
-        source,
-        destination
-      );
-      const newState = { ...movieStorage };
-      newState[sInd] = result[sInd];
-      newState[dInd] = result[dInd];
+      // const result = move(
+      //   movieStorage[sInd],
+      //   movieStorage[dInd],
+      //   source,
+      //   destination
+      // );
+      // const newState = { ...movieStorage };
+      // newState[sInd] = result[sInd];
+      // newState[dInd] = result[dInd];
 
-      setMovieStorage(newState);
+      // setMovieStorage(newState);
+      moveCard(sInd, dInd, source, destination);
+      // dispatch({
+      //   type: "MOVE_CARD",
+      //   payload: {
+      //     sourceIndex: sInd,
+      //     destIndex: dInd,
+      //     droppableSource: source,
+      //     droppableDestination: destination,
+      //   },
+      // });
     }
   }
 
-  const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: "5px",
-    width: 250,
-  });
+  //        EZT MEG KELL MÉG
 
-  const deleteMovieCard = (key, index) => {
-    const newState = { ...movieStorage };
-    newState[key].splice(index, 1);
-    setMovieStorage(newState);
-  };
+  // const deleteMovieCard = (key, index) => {
+  //   dispatch({
+  //     type: "DELETE_CARD",
+  //     payload: {
+  //       sourceIndex: key,
+  //       startIndex: index,
+  //     },
+  //   });
+  //   // const newState = { ...movieStorage };
+  //   // newState[key].splice(index, 1);
+  //   // setMovieStorage(newState);
+  // };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-
-      <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-helper-label">Genre</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={genreFilter}
-          label="Genre"
-          onChange={handleChange}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {genres.map((genre, i) => (
-            <MenuItem key={i} value={genre}>
-              {genre}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <TextField
-        id="outlined-name"
-        label="Title"
-        onChange={(e) => setTitleFilter(e.target.value)}
-        value={titleFilter}
-      />
-      {/* <Button type="submit" onClick={getTitle}>
-        submit
-      </Button> */}
-      <LoadingButton
-        size="small"
-        color="secondary"
-        onClick={getTitle}
-        loading={isLoading}
-        loadingPosition="start"
-        startIcon={<Search />}
-        variant="contained"
+    <>
+      <Box
+        sx={{
+          backgroundColor: "#e29e20",
+          p: "10px",
+          borderTopLeftRadius: "10px",
+          borderTopRightRadius: "10px",
+          fontWeight: "700",
+          boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
+        }}
       >
-        Search
-      </LoadingButton>
+        My Movie List
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#e29e20",
+          flexDirection: "column",
+          padding: { lg: "50px", sm: "10px" },
+          borderTopLeftRadius: "10px",
+          borderTopRightRadius: "10px",
+          boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
+        }}
+      >
+        <SearchBar
+          {...{
+            genreFilter,
+            handleChange,
+            genres,
+            titleFilter,
+            getTitle,
+            isLoading,
+            setTitleFilter,
+          }}
+        />
 
-      <Box sx={{ display: "flex", gap: "20px", backgroundColor: "red" }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-          {Object.keys(movieStorage).map((key) =>
-            movieStorage[key] ? (
+        <Box
+          sx={{
+            display: "flex",
+            gap: "50px",
+            maxHeight: "500px",
+          }}
+        >
+          <DragDropContext onDragEnd={onDragEnd}>
+            {Object.keys(state).map((key) => (
               <MovieList
-                listData={movieStorage[key]}
+                listData={state[key]}
                 key={key}
                 type={key}
-                onClickDelete={deleteMovieCard}
+                onClickDelete={deleteCard}
               />
-            ) : (
-              <div key={key}>empty</div>
-            )
-          )}
-        </DragDropContext>
+            ))}
+          </DragDropContext>
+        </Box>
       </Box>
-    </Container>
+    </>
   );
 }
 

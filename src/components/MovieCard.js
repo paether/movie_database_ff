@@ -13,6 +13,7 @@ const MovieCard = ({
   onClickDelete,
   index,
   id,
+  item,
 }) => {
   const navigate = useNavigate();
   return (
@@ -20,7 +21,7 @@ const MovieCard = ({
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       ref={provided.innerRef}
-      sx={{ minWidth: 275 }}
+      sx={{ maxWidth: 200 }}
     >
       <CardContent>
         {type === "toWatch" && (
@@ -30,15 +31,15 @@ const MovieCard = ({
         )}
 
         <Typography variant="h5" component="div">
-          {titleText}
+          {item.titleText.text}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {releaseYear}
+          {item.releaseYear ? item.releaseYear.year : "Release year unknown"}
         </Typography>
       </CardContent>
       <CardActions>
         {/* <Link to={id}>More details </Link> */}
-        <Button onClick={() => navigate("/" + id)} size="small">
+        <Button onClick={() => navigate("/" + item.id)} size="small">
           More details
         </Button>
         {type === "toWatch" && (
