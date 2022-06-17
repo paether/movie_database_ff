@@ -1,13 +1,5 @@
 export const MoviesReducer = (state, action) => {
   switch (action.type) {
-    case "test":
-      return {
-        ...state,
-        toWatch: [
-          { id: "1234", titleText: { text: "helo" } },
-          { id: "234567", titleText: { text: "helo2" } },
-        ],
-      };
     case "UPDATE_SEARCH_RESULT":
       return {
         ...state,
@@ -41,7 +33,6 @@ export const MoviesReducer = (state, action) => {
 
         return result;
       };
-      // const result = move();
 
       return move();
 

@@ -1,21 +1,35 @@
 import "./App.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import axiosInstance from "./api";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import NotFound from "./pages/NotFound";
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#00414c",
+    },
+    secondary: {
+      main: "#e29e20",
+    },
+  },
+  breakpoints: {
+    values: {
+      xxs: 0,
+      xs: 400,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
+
 function App() {
-  // const [movieStorage, setMovieStorage] = useState({
-  //   searchResult: [],
-  //   toWatch: [],
-  //   // [
-  //   //   { id: "1234", titleText: { text: "helo" } },
-  //   //   { id: "234567", titleText: { text: "helo2" } },
-  //   // ],
-  // });
   const [genres, setGenres] = useState([]);
 
   async function getGenres() {
@@ -28,13 +42,15 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home genres={genres} />} />
-        <Route path="/:id" element={<Detail />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home genres={genres} />} />
+          <Route path="/:id" element={<Detail />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useState, useContext } from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import { useState, useContext, useEffect } from "react";
+import { DragDropContext } from "react-beautiful-dnd";
 import Typography from "@mui/material/Typography";
 
-import axiosInstance from "../api";
-import MovieList from "../components/MovieList";
+import Box from "@mui/material/Box";
+
+import MovieList from "../components/MovieList/MovieList";
 import SearchBar from "../components/SearchBar";
 import { MoviesContext } from "../contexts/MoviesContext";
 
@@ -14,148 +12,27 @@ function Home({ genres }) {
   const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
     useContext(MoviesContext);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-  const [genreFilter, setGenreFilter] = useState("");
-  const [titleFilter, setTitleFilter] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleChange = (event) => {
-    setGenreFilter(event.target.value);
-  };
-
-  const getTitle = useCallback(
-    async (e) => {
-      if (!titleFilter) return;
-      try {
-        setIsLoading(true);
-        const resp = await axiosInstance.get(
-          `/titles/search/title/${titleFilter}`,
-          {
-            params: {
-              info: "base_info",
-              titleType: "movie",
-              ...(genreFilter && { genre: genreFilter }),
-            },
-          }
-        );
-
-        // setMovieStorage((prev) => ({
-        //   ...prev,
-        //   searchResult: resp.data.results,
-        // }));
-        // dispatch({ type: "UPDATE_SEARCH_RESULT", payload: resp.data.results });
-        updateSearchResult(resp.data.results);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.log(error);
-      }
-    },
-    [titleFilter, genreFilter, updateSearchResult]
-  );
-
   // useEffect(() => {
-  //   console.log(movieStorage);
-  // }, [movieStorage]);
+  //   console.log(state);
+  // }, [state]);
 
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
-  const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-    destClone.splice(droppableDestination.index, 0, removed);
-
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
-
-    return result;
-  };
+  const [titleFilter, setTitleFilter] = useState("");
 
   function onDragEnd(result) {
     const { source, destination } = result;
+    //if drag is outside of the list OR the user tries to drag into the search result list
     if (!destination || destination.droppableId === "searchResult") {
       return;
     }
-    const sInd = source.droppableId;
-    const dInd = destination.droppableId;
+    const sourceIndex = source.droppableId;
+    const destIndex = destination.droppableId;
 
-    // if (
-    //   movieStorage[dInd] &&
-    //   movieStorage[dInd].find(
-    //     (item) => item.id === movieStorage[sInd][source.index].id
-    //   )
-    // ) {
-    //   return;
-    // }
-
-    if (sInd === dInd) {
-      // const items = reorder(
-      //   movieStorage[sInd],
-      //   source.index,
-      //   destination.index
-      // );
-      // const newState = { ...movieStorage };
-      // newState[sInd] = items;
-      // setMovieStorage(newState);
-      reorderCards(sInd, source.index, destination.index);
-      // dispatch({
-      //   type: "REORDER_CARDS",
-      //   payload: {
-      //     sourceIndex: sInd,
-      //     startIndex: source.index,
-      //     endIndex: destination.index,
-      //   },
-      // });
+    if (sourceIndex === destIndex) {
+      reorderCards(sourceIndex, source.index, destination.index);
     } else {
-      // const result = move(
-      //   movieStorage[sInd],
-      //   movieStorage[dInd],
-      //   source,
-      //   destination
-      // );
-      // const newState = { ...movieStorage };
-      // newState[sInd] = result[sInd];
-      // newState[dInd] = result[dInd];
-
-      // setMovieStorage(newState);
-      moveCard(sInd, dInd, source, destination);
-      // dispatch({
-      //   type: "MOVE_CARD",
-      //   payload: {
-      //     sourceIndex: sInd,
-      //     destIndex: dInd,
-      //     droppableSource: source,
-      //     droppableDestination: destination,
-      //   },
-      // });
+      moveCard(sourceIndex, destIndex, source, destination);
     }
   }
-
-  //        EZT MEG KELL MÉG
-
-  // const deleteMovieCard = (key, index) => {
-  //   dispatch({
-  //     type: "DELETE_CARD",
-  //     payload: {
-  //       sourceIndex: key,
-  //       startIndex: index,
-  //     },
-  //   });
-  //   // const newState = { ...movieStorage };
-  //   // newState[key].splice(index, 1);
-  //   // setMovieStorage(newState);
-  // };
 
   return (
     <>
@@ -165,8 +42,10 @@ function Home({ genres }) {
           p: "10px",
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
+          fontSize: "2rem",
           fontWeight: "700",
           boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
+          color: "#002127",
         }}
       >
         My Movie List
@@ -178,39 +57,63 @@ function Home({ genres }) {
           justifyContent: "center",
           backgroundColor: "#e29e20",
           flexDirection: "column",
-          padding: { lg: "50px", sm: "10px" },
+          padding: { lg: "30px 0 0 0", sm: "10px" },
+          margin: "0 20px",
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
           boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
         }}
       >
         <SearchBar
           {...{
-            genreFilter,
-            handleChange,
             genres,
             titleFilter,
-            getTitle,
-            isLoading,
             setTitleFilter,
+            updateSearchResult,
           }}
         />
 
         <Box
           sx={{
             display: "flex",
-            gap: "50px",
+            gap: { xs: "10px", md: "30px" },
+            margin: { xs: "10px", md: "30px" },
             maxHeight: "500px",
           }}
         >
           <DragDropContext onDragEnd={onDragEnd}>
             {Object.keys(state).map((key) => (
-              <MovieList
-                listData={state[key]}
-                key={key}
-                type={key}
-                onClickDelete={deleteCard}
-              />
+              <Box
+                sx={{
+                  width: { xxs: "150px", xs: "200px", md: "300px" },
+                  height: "100%",
+                  borderBottomRightRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                }}
+              >
+                <Typography
+                  color="white"
+                  textAlign="center"
+                  sx={{
+                    backgroundColor: "primary.dark",
+                    width: "100%",
+                    padding: { md: "20px", xxs: "10px" },
+                    borderTopRightRadius: "20px",
+                    borderTopLeftRadius: "20px",
+                    fontSize: { xxs: "1rem", xs: "1.5rem", md: "2rem" },
+                  }}
+                >
+                  {key === "toWatch" ? "My Movies" : "Searched Movies"}
+                </Typography>
+                <MovieList
+                  listData={state[key]}
+                  key={key}
+                  type={key}
+                  onClickDelete={deleteCard}
+                />
+              </Box>
             ))}
           </DragDropContext>
         </Box>

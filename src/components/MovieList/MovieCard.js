@@ -3,29 +3,43 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({
   provided,
-  titleText,
   type,
-  releaseYear,
   onClickDelete,
   index,
-  id,
   item,
+  snapshot,
 }) => {
   const navigate = useNavigate();
+
   return (
     <Card
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       ref={provided.innerRef}
-      sx={{ maxWidth: 200 }}
+      sx={{ width: "calc(100% - 30px)", margin: "10px 0" }}
+      style={{
+        ...provided.draggableProps.style,
+        background: snapshot.isDragging
+          ? "rgba(245,245,245, 0.25)"
+          : "rgba(245,245,245, 0.75)",
+      }}
     >
-      <CardContent>
+      <CardContent sx={{ padding: "10px" }}>
         {type === "toWatch" && (
-          <Typography variant="h5" component="div">
+          <Typography
+            variant="h6"
+            component="span"
+            sx={{
+              backgroundColor: "#00414c",
+              color: "white",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          >
             {index + 1}
           </Typography>
         )}
@@ -33,12 +47,11 @@ const MovieCard = ({
         <Typography variant="h5" component="div">
           {item.titleText.text}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        <Typography color="text.secondary">
           {item.releaseYear ? item.releaseYear.year : "Release year unknown"}
         </Typography>
       </CardContent>
       <CardActions>
-        {/* <Link to={id}>More details </Link> */}
         <Button onClick={() => navigate("/" + item.id)} size="small">
           More details
         </Button>
