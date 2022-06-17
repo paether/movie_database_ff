@@ -44,13 +44,13 @@ function useFetchMovieData(url) {
           getMovieData("base_info"),
           getMovieData("creators_directors_writers"),
         ]);
-
+        console.log(base_info.data.results);
         const aggregateData = {
           rating: rating.data.results.ratingsSummary,
           wins: awards.data.results.wins,
           nominations: awards.data.results.nominations,
-          plot: base_info.data.results.plot.plotText.plainText,
-          imageUrl: base_info.data.results.primaryImage.url,
+          plot: base_info.data.results.plot?.plotText?.plainText,
+          imageUrl: base_info.data.results.primaryImage?.url,
           creators: creators.data.results,
         };
         dispatch({ type: "fetched", payload: aggregateData });

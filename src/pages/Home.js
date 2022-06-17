@@ -42,7 +42,7 @@ function Home({ genres }) {
           p: "10px",
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
-          fontSize: "2rem",
+          fontSize: { xs: "1rem", sm: "2rem" },
           fontWeight: "700",
           boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
           color: "#002127",
@@ -78,14 +78,16 @@ function Home({ genres }) {
         <Box
           sx={{
             display: "flex",
-            gap: { xs: "10px", md: "30px" },
-            margin: { xs: "10px", md: "30px" },
+            flexDirection: { sm: "row", xxs: "column" },
+            gap: { xxs: "10px", md: "30px" },
+            margin: { xxs: "10px", md: "30px" },
             maxHeight: "500px",
           }}
         >
           <DragDropContext onDragEnd={onDragEnd}>
             {Object.keys(state).map((key) => (
               <Box
+                key={key}
                 sx={{
                   width: { xxs: "150px", xs: "200px", md: "300px" },
                   height: "100%",
@@ -109,7 +111,6 @@ function Home({ genres }) {
                 </Typography>
                 <MovieList
                   listData={state[key]}
-                  key={key}
                   type={key}
                   onClickDelete={deleteCard}
                 />

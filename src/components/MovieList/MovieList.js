@@ -20,7 +20,7 @@ const MovieList = ({ type, listData }) => {
             sx={{
               backgroundColor: "primary.main",
               width: "100%",
-              maxHeight: "400px",
+              maxHeight: { xs: "150px", sm: "400px" },
               overflow: "scroll",
               overscrollBehavior: "contain",
               position: "relative",
@@ -53,36 +53,36 @@ const MovieList = ({ type, listData }) => {
                   </Draggable>
                 ))
               ) : type === "toWatch" ? (
-                <Card>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Drag your favorite movies here!
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    color: "white",
+                    padding: { xs: "10px", md: "20px" },
+                  }}
+                >
+                  <Typography variant="h5" component="h2">
+                    Drop your favorite movies here!
+                  </Typography>
+                </Box>
               ) : listData === "No movies found!" ? (
-                <Card>
-                  <div>no movies found</div>
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                    ></Typography>
-                    <SwipeRightIcon />
-                  </CardContent>
-                </Card>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    color: "white",
+                    padding: { xs: "10px", md: "20px" },
+                  }}
+                >
+                  <Typography variant="h5" component="h2">
+                    Movie not found!
+                  </Typography>
+                </Box>
               ) : (
-                <Card>
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                    ></Typography>
-                    <SwipeRightIcon />
-                  </CardContent>
-                </Card>
+                <SwipeRightIcon
+                  sx={{
+                    margin: "10px",
+                    fontSize: { xs: "2rem", sm: "3rem", color: "white" },
+                  }}
+                />
               )}
             </Box>
             {provided.placeholder}

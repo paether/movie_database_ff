@@ -16,6 +16,9 @@ const theme = createTheme({
     secondary: {
       main: "#e29e20",
     },
+    darkOrange: {
+      main: "#bd5003",
+    },
   },
   breakpoints: {
     values: {

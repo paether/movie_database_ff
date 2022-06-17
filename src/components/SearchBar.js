@@ -69,11 +69,14 @@ export default function SearchBar({
       borderColor: "secondary.main",
       color: "secondary.main",
     },
-    ".MuiInputLabel-root": {
-      color: "secondary.main",
-    },
     ".MuiOutlinedInput-root": {
       color: "secondary.main",
+      "&:hover fieldset": {
+        borderColor: "darkOrange.main",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "darkOrange.main",
+      },
     },
     ".MuiOutlinedInput-notchedOutline": {
       borderColor: "secondary.main",
@@ -85,9 +88,6 @@ export default function SearchBar({
     ":hover .MuiOutlinedInput-notchedOutline": {
       borderColor: "secondary.main",
     },
-    "&:hover": {
-      borderColor: "secondary.main",
-    },
 
     ".MuiSelect-icon": {
       color: "secondary.main",
@@ -95,6 +95,9 @@ export default function SearchBar({
 
     ".MuiInputBase-root-MuiOutlinedInput-root": {
       borderColor: "secondary.main",
+    },
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "darkOrange.main",
     },
   };
 
@@ -109,6 +112,7 @@ export default function SearchBar({
         padding: { xxs: "20px" },
         backgroundColor: "#002127",
         borderRadius: "10px",
+        margin: { xxs: "10px" },
       }}
     >
       <Box
@@ -121,7 +125,7 @@ export default function SearchBar({
       >
         <FormControl sx={{ m: 1, width: 150 }}>
           <InputLabel
-            sx={{ ...inputStyle, color: "secondary.main" }}
+            sx={{ ...inputStyle, color: "darkOrange.main" }}
             id="genre-select-label"
           >
             Genre
@@ -133,7 +137,15 @@ export default function SearchBar({
             labelId="genre-select-label"
             id="genre-select"
             sx={inputStyle}
-            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  maxHeight: 300,
+                  backgroundColor: "darkOrange.main",
+                  color: "primary.main",
+                },
+              },
+            }}
           >
             <MenuItem value="">
               <em>None</em>
@@ -156,32 +168,12 @@ export default function SearchBar({
           ...inputStyle,
           width: "150px",
           borderColor: "secondary.main",
-          "&notchedOutline": {
-            borderColor: "secondary.main",
+          "& label.Mui-focused": {
+            color: "secondary.main",
           },
-          "&Outline": {
-            borderColor: "secondary.main",
+          "& label": {
+            color: "darkOrange.main",
           },
-          "&.MuiAutocomplete-inputRoot": {
-            color: "purple",
-            '&[class*="MuiOutlinedInput-root"] .MuiAutocomplete-input:first-child':
-              {
-                paddingLeft: 26,
-              },
-            "&.MuiOutlinedInput-notchedOutline": {
-              borderColor: "green",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "red",
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "purple",
-            },
-          },
-        }}
-        InputLabelProps={{
-          style: { color: "secondary.light" },
-          floatingLabelFocusStyle: { color: "secondary.main" },
         }}
       />
       <LoadingButton
@@ -194,7 +186,7 @@ export default function SearchBar({
         sx={{
           backgroundColor: "secondary.main",
           "&:hover": {
-            backgroundColor: "#bd5002",
+            backgroundColor: "darkOrange.main",
           },
         }}
       >

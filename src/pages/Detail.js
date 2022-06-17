@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 import useFetchMovieData from "../Hooks/useFetchMovieData";
-
+import NotFound from "./NotFound";
 function Detail() {
   const { id } = useParams();
   const { data, error } = useFetchMovieData(`/titles/${id}`);
@@ -15,6 +15,11 @@ function Detail() {
   const navigate = useNavigate();
 
   if (error) {
+    console.log(error);
+    const idPattern = /^\w{2}\d{7}/;
+    if (!idPattern.test(id)) {
+      return <NotFound />;
+    }
     return <div>error</div>;
   }
   if (!data) {
