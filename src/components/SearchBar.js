@@ -8,17 +8,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Search } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { MoviesContext } from "../contexts/MoviesContext";
 
+import { MoviesContext } from "../contexts/MoviesContext";
 import axiosInstance from "../api";
 
-export default function SearchBar({
-  genres,
-  titleFilter,
-  setTitleFilter,
-  updateSearchResult,
-}) {
+export default function SearchBar({ genres, updateSearchResult }) {
   const [genreFilter, setGenreFilter] = useState("");
+  const [titleFilter, setTitleFilter] = useState("");
+
   const { state } = useContext(MoviesContext);
 
   const handleGenreChange = (event) => {

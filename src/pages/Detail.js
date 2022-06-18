@@ -7,9 +7,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
-import InformationCard from "../components/InformationCard";
 
-import useFetchMovieData from "../Hooks/useFetchMovieData";
+import InformationCard from "../components/InformationCard";
+import useFetchMovieData from "../hooks/useFetchMovieData";
+
 function Detail() {
   const { id } = useParams();
   const { data, error } = useFetchMovieData(`/titles/${id}`);
@@ -18,13 +19,13 @@ function Detail() {
 
   if (error) {
     const idPattern = /^\w{2}\d{7}/;
-    let information;
-    if (!idPattern.test(id)) {
-      information = "Invalid Movie ID!";
-    }
+    const information = !idPattern.test(id)
+      ? "Invalid Movie ID!"
+      : "Unknown error occured";
+
     return (
       <Box sx={{ display: "flex" }}>
-        <InformationCard information={information || "Unknown error occured"} />
+        <InformationCard information={information} />
       </Box>
     );
   }

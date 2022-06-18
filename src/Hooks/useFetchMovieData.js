@@ -39,7 +39,7 @@ function useFetchMovieData(url) {
 
       try {
         //based on API documentation these information can only be gathered from seperate endpoints
-        const [rating, awards, base_info, creators] = await Promise.all([
+        const [rating, awards, baseInfo, creators] = await Promise.all([
           getMovieData("rating"),
           getMovieData("awards"),
           getMovieData("base_info"),
@@ -49,11 +49,11 @@ function useFetchMovieData(url) {
           rating: rating.data.results.ratingsSummary,
           wins: awards.data.results.wins,
           nominations: awards.data.results.nominations,
-          plot: base_info.data.results.plot?.plotText?.plainText,
-          title: base_info.data.results.titleText?.text,
-          imageUrl: base_info.data.results.primaryImage?.url,
+          plot: baseInfo.data.results.plot?.plotText?.plainText,
+          title: baseInfo.data.results.titleText?.text,
+          imageUrl: baseInfo.data.results.primaryImage?.url,
           creators: creators.data.results,
-          genres: base_info.data.results.genres?.genres,
+          genres: baseInfo.data.results.genres?.genres,
         };
         dispatch({ type: "fetched", payload: aggregateData });
       } catch (error) {

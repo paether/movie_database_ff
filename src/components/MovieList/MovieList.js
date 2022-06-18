@@ -1,6 +1,5 @@
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { useContext } from "react";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SwipeRightIcon from "@mui/icons-material/SwipeRight";
@@ -59,7 +58,7 @@ const MovieList = ({ type, listData }) => {
                     padding: { xs: "10px", md: "20px" },
                   }}
                 >
-                  <Typography variant="h5" component="h2">
+                  <Typography sx={{ fontSize: { xxs: "1rem", xs: "1.5rem" } }}>
                     Drop your favorite movies here!
                   </Typography>
                 </Box>

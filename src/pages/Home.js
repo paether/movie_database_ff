@@ -1,7 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Typography from "@mui/material/Typography";
-
 import Box from "@mui/material/Box";
 
 import MovieList from "../components/MovieList/MovieList";
@@ -12,24 +11,25 @@ function Home({ genres }) {
   const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
     useContext(MoviesContext);
 
-  const [titleFilter, setTitleFilter] = useState("");
-
   //event handler when user drops the card
-  function onDragEnd(result) {
-    const { source, destination } = result;
-    //if drag is outside of the list OR the user tries to drag into the search result list
-    if (!destination || destination.droppableId === "searchResult") {
-      return;
-    }
-    const sourceIndex = source.droppableId;
-    const destIndex = destination.droppableId;
+  const onDragEnd = useCallback(
+    (result) => {
+      const { source, destination } = result;
+      //if drag is outside of the list OR the user tries to drag into the search result list
+      if (!destination || destination.droppableId === "searchResult") {
+        return;
+      }
+      const sourceIndex = source.droppableId;
+      const destIndex = destination.droppableId;
 
-    if (sourceIndex === destIndex) {
-      reorderCards(sourceIndex, source.index, destination.index);
-    } else {
-      moveCard(sourceIndex, destIndex, source, destination);
-    }
-  }
+      if (sourceIndex === destIndex) {
+        reorderCards(sourceIndex, source.index, destination.index);
+      } else {
+        moveCard(sourceIndex, destIndex, source, destination);
+      }
+    },
+    [moveCard, reorderCards]
+  );
 
   return (
     <>
@@ -66,8 +66,6 @@ function Home({ genres }) {
         <SearchBar
           {...{
             genres,
-            titleFilter,
-            setTitleFilter,
             updateSearchResult,
           }}
         />
@@ -86,7 +84,7 @@ function Home({ genres }) {
               <Box
                 key={key}
                 sx={{
-                  width: { xxs: "150px", xs: "200px", md: "300px" },
+                  width: { xxs: "200px", md: "300px" },
                   height: "100%",
                   borderBottomRightRadius: "20px",
                   borderBottomLeftRadius: "20px",

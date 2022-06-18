@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useCallback } from "react";
+
 import { MoviesReducer } from "./MoviesReducer";
 
 const initialState = {
