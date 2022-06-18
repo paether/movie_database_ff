@@ -1,12 +1,11 @@
 import "./App.css";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, HashRouter, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import axiosInstance from "./api";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
-import InformationCard from "./components/InformationCard";
 
 const theme = createTheme({
   palette: {
@@ -45,20 +44,17 @@ function App() {
     getGenres();
   }, []);
 
+  // im using HashRouter instead of BrowserRouter because GitHub Pages
+  // doesn’t support the HTML5 pushState history API
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Home genres={genres} />} />
           <Route path="/:id" element={<Detail />} />
-          <Route
-            path="*"
-            element={
-              <InformationCard information={"404 - This page does not exist"} />
-            }
-          />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 }

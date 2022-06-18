@@ -2,7 +2,7 @@
   "name": "movie_database_ff",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://paether.github.io",
+  "homepage": "https://paether.github.io/movie_database_ff",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
