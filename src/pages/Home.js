@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Typography from "@mui/material/Typography";
 
@@ -12,12 +12,9 @@ function Home({ genres }) {
   const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
     useContext(MoviesContext);
 
-  // useEffect(() => {
-  //   console.log(state);
-  // }, [state]);
-
   const [titleFilter, setTitleFilter] = useState("");
 
+  //event handler when user drops the card
   function onDragEnd(result) {
     const { source, destination } = result;
     //if drag is outside of the list OR the user tries to drag into the search result list
@@ -107,7 +104,7 @@ function Home({ genres }) {
                     fontSize: { xxs: "1rem", xs: "1.5rem", md: "2rem" },
                   }}
                 >
-                  {key === "toWatch" ? "My Movies" : "Searched Movies"}
+                  {key === "toWatch" ? "Watchlist" : "Movies"}
                 </Typography>
                 <MovieList
                   listData={state[key]}

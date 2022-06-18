@@ -1,8 +1,7 @@
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { useContext } from "react";
+
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import SwipeRightIcon from "@mui/icons-material/SwipeRight";
 
@@ -20,7 +19,7 @@ const MovieList = ({ type, listData }) => {
             sx={{
               backgroundColor: "primary.main",
               width: "100%",
-              maxHeight: { xs: "150px", sm: "400px" },
+              maxHeight: { xxs: "150px", sm: "400px" },
               overflow: "scroll",
               overscrollBehavior: "contain",
               position: "relative",

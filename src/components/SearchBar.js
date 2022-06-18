@@ -1,13 +1,14 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import { Search } from "@mui/icons-material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import { TextField } from "@mui/material";
+import { MoviesContext } from "../contexts/MoviesContext";
 
 import axiosInstance from "../api";
 
@@ -18,7 +19,7 @@ export default function SearchBar({
   updateSearchResult,
 }) {
   const [genreFilter, setGenreFilter] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { state } = useContext(MoviesContext);
 
   const handleGenreChange = (event) => {
     setGenreFilter(event.target.value);
@@ -28,7 +29,6 @@ export default function SearchBar({
     async (e) => {
       if (!titleFilter) return;
       try {
-        setIsLoading(true);
         const resp = await axiosInstance.get(
           `/titles/search/title/${titleFilter}`,
           {
@@ -39,20 +39,23 @@ export default function SearchBar({
             },
           }
         );
+
         if (resp.data.results?.length === 0) {
           updateSearchResult("No movies found!");
-          setIsLoading(false);
           return;
         }
-
-        updateSearchResult(resp.data.results);
-        setIsLoading(false);
+        //filter out those movies which are already in the "My Movies" list
+        const filteredResults = resp.data.results.filter((item) => {
+          return !state["toWatch"].find(
+            (toWatchItem) => toWatchItem.id === item.id
+          );
+        });
+        updateSearchResult(filteredResults);
       } catch (error) {
-        setIsLoading(false);
         console.log(error);
       }
     },
-    [titleFilter, genreFilter, updateSearchResult]
+    [titleFilter, genreFilter, updateSearchResult, state]
   );
 
   const inputStyle = {
@@ -162,6 +165,13 @@ export default function SearchBar({
         id="outlined-basic"
         label="Movie Title"
         variant="outlined"
+        onKeyPress={(ev) => {
+          if (ev.key === "Enter") {
+            // Do code here
+            ev.preventDefault();
+            getTitle();
+          }
+        }}
         onChange={(e) => setTitleFilter(e.target.value)}
         value={titleFilter}
         sx={{
@@ -176,11 +186,9 @@ export default function SearchBar({
           },
         }}
       />
-      <LoadingButton
+      <Button
         size="small"
         onClick={getTitle}
-        loading={isLoading}
-        loadingPosition="start"
         startIcon={<Search />}
         variant="contained"
         sx={{
@@ -188,10 +196,11 @@ export default function SearchBar({
           "&:hover": {
             backgroundColor: "darkOrange.main",
           },
+          color: "primary.main",
         }}
       >
         Search
-      </LoadingButton>
+      </Button>
     </Box>
   );
 }

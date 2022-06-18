@@ -6,20 +6,20 @@ export const MoviesReducer = (state, action) => {
         searchResult: action.payload,
       };
     case "REORDER_CARDS":
-      const reorder = () => {
-        const result = Array.from(state[action.payload.sourceIndex]);
-        const [removed] = result.splice(action.payload.startIndex, 1);
-        result.splice(action.payload.endIndex, 0, removed);
+      const reorderCards = () => {
+        const sourceClone = Array.from(state[action.payload.sourceIndex]);
+        const [removed] = sourceClone.splice(action.payload.startIndex, 1);
+        sourceClone.splice(action.payload.endIndex, 0, removed);
         const newState = { ...state };
-        newState[action.payload.sourceIndex] = result;
+        newState[action.payload.sourceIndex] = sourceClone;
 
         return newState;
       };
 
-      return reorder();
+      return reorderCards();
 
     case "MOVE_CARD":
-      const move = () => {
+      const moveCard = () => {
         const sourceClone = Array.from(state[action.payload.sourceIndex]);
         const destClone = Array.from(state[action.payload.destIndex]);
         const [removed] = sourceClone.splice(
@@ -34,7 +34,7 @@ export const MoviesReducer = (state, action) => {
         return result;
       };
 
-      return move();
+      return moveCard();
 
     case "DELETE_CARD":
       const deleteCard = () => {

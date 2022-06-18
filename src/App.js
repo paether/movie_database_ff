@@ -6,7 +6,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import axiosInstance from "./api";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
-import NotFound from "./pages/NotFound";
+import InformationCard from "./components/InformationCard";
 
 const theme = createTheme({
   palette: {
@@ -35,6 +35,7 @@ const theme = createTheme({
 function App() {
   const [genres, setGenres] = useState([]);
 
+  //populate the Genre dropdown from the database
   async function getGenres() {
     const resp = await axiosInstance.get("/titles/utils/genres");
     setGenres(resp.data.results);
@@ -50,7 +51,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home genres={genres} />} />
           <Route path="/:id" element={<Detail />} />
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="*"
+            element={
+              <InformationCard information={"404 - This page does not exist"} />
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

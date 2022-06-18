@@ -2,10 +2,11 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import TheatersIcon from "@mui/icons-material/Theaters";
-
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import MediaQuery from "react-responsive";
+
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({
@@ -17,7 +18,7 @@ const MovieCard = ({
   snapshot,
 }) => {
   const navigate = useNavigate();
-  console.log(item);
+
   return (
     <Card
       {...provided.draggableProps}
@@ -65,7 +66,9 @@ const MovieCard = ({
           <Button
             onClick={() => navigate("/" + item.id)}
             size="small"
-            sx={{ padding: "0px" }}
+            sx={{
+              padding: "0px",
+            }}
           >
             Details
           </Button>
@@ -77,23 +80,23 @@ const MovieCard = ({
         </CardActions>
       </Box>
       <Box sx={{ marginLeft: "auto", alignSelf: "stretch" }}>
-        {item.primaryImage ? (
-          <Box
-            component="img"
-            sx={{
-              width: 100,
-              height: "100%",
-              borderRadius: "10px",
-              // border: "5px solid",
-              // borderColor: "#002d35",
-              padding: "5px",
-            }}
-            alt="The house from the offer."
-            src={item.primaryImage.url}
-          />
-        ) : (
-          <TheatersIcon sx={{ fontSize: "100px" }} />
-        )}
+        <MediaQuery minWidth={900}>
+          {item.primaryImage ? (
+            <Box
+              component="img"
+              sx={{
+                width: 100,
+                height: "100%",
+                borderRadius: "10px",
+                padding: "5px",
+              }}
+              alt="The house from the offer."
+              src={item.primaryImage.url}
+            />
+          ) : (
+            <TheatersIcon sx={{ fontSize: "100px" }} />
+          )}
+        </MediaQuery>
       </Box>
     </Card>
   );
