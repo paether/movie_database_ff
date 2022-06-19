@@ -7,13 +7,20 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
+import StarIcon from "@mui/icons-material/Star";
 
 import InformationCard from "../components/InformationCard";
 import useFetchMovieData from "../hooks/useFetchMovieData";
 
 function Detail() {
+  let aggregateData;
   const { id } = useParams();
-  const { data, error } = useFetchMovieData(`/titles/${id}`);
+  const { data, error } = useFetchMovieData(`/titles/${id}`, [
+    "rating",
+    "awards",
+    "base_info",
+    "creators_directors_writers",
+  ]);
 
   const navigate = useNavigate();
 
@@ -23,18 +30,28 @@ function Detail() {
       ? "Invalid Movie ID!"
       : "Unknown error occured";
 
-    return (
-      <Box sx={{ display: "flex" }}>
-        <InformationCard information={information} />
-      </Box>
-    );
+    return <InformationCard information={information} />;
   }
+
   if (!data) {
-    return (
-      <Box sx={{ display: "flex" }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <CircularProgress />;
+  }
+
+  if (data) {
+    let [rating, awards, baseInfo, creators] = data;
+    aggregateData = {
+      rating: rating.data.results?.ratingsSummary || "",
+      wins: awards.data.results?.wins,
+      nominations: awards.data.results?.nominations,
+      plot: baseInfo.data.results?.plot?.plotText?.plainText,
+      title: baseInfo.data.results?.titleText?.text,
+      releaseYear: baseInfo.data.results?.releaseYear?.year,
+
+      imageUrl: baseInfo.data.results?.primaryImage?.url,
+      creators: creators.data.results,
+      genres: baseInfo.data.results?.genres?.genres,
+    };
+    console.log(creators);
   }
 
   const numberStyle = {
@@ -74,12 +91,12 @@ function Detail() {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 360,
+          maxWidth: { xxs: "360px", sm: "500px" },
           bgcolor: "secondary.main",
           borderRadius: "20px",
         }}
       >
-        {data.imageUrl ? (
+        {aggregateData.imageUrl ? (
           <Box
             sx={{
               maxHeight: 150,
@@ -96,7 +113,7 @@ function Detail() {
                 width: "100%",
               }}
               alt="Movie Cover"
-              src={data.imageUrl}
+              src={aggregateData.imageUrl}
             />
           </Box>
         ) : (
@@ -107,64 +124,147 @@ function Detail() {
             sx={{
               display: "flex",
               justifyContent: "flex-start",
-              alignItems: "center",
-              mb: "10px",
+              alignItems: "flex-start",
             }}
           >
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{ marginRight: "10px" }}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="h4"
+                component="div"
+                sx={{ marginRight: "10px" }}
+              >
+                {aggregateData.title || "Movie Title"}
+              </Typography>
+              <Typography color="text.secondary">
+                {aggregateData.releaseYear || "Release year unknown"}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                ...numberStyle,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              {data.title || "Movie Title"}
-            </Typography>
-            <Typography variant="h6" component="div" sx={{ ...numberStyle }}>
-              {data.rating?.aggregateRating || "N/A"}
-            </Typography>
+              <StarIcon />
+              <Typography variant="h6" component="div">
+                {aggregateData.rating?.aggregateRating || "N/A"}
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              gap: "10px",
+              alignItems: "center",
+              flexWrap: "wrap",
+              flexDirection: { xs: "row", xxs: "column" },
+              pt: "10px",
+              pb: "10px",
+            }}
+          >
+            {aggregateData.genres.map((genre) => (
+              <Chip
+                key={genre.id}
+                label={genre.text}
+                sx={{
+                  backgroundColor: "transparent",
+                  color: "text.secondary",
+                  borderColor: "text.secondary",
+                  border: "1px solid",
+                }}
+              />
+            ))}
           </Box>
           <Typography color="text.secondary" variant="body2">
-            {data.plot || "No plot available"}
+            {aggregateData.plot || "No plot available"}
           </Typography>
         </Box>
-        {Array.isArray(data.genres) && (
-          <>
-            <Divider variant="middle" />
+        {Array.isArray(aggregateData.creators.directors) &&
+          aggregateData.creators.directors.length > 0 && (
+            <>
+              <Divider variant="middle" />
 
-            <Box sx={{ m: 2 }}>
-              <Typography
-                gutterBottom
-                variant="body1"
-                sx={{
-                  fontSize: "1.4rem",
-                  textAlign: { xxs: "center", xs: "left" },
-                }}
-              >
-                Genres
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  flexDirection: { xs: "row", xxs: "column" },
-                }}
-              >
-                {data.genres.map((genre) => (
-                  <Chip
-                    key={genre.id}
-                    label={genre.text}
-                    sx={{
-                      backgroundColor: "primary.main",
-                      color: "white",
-                    }}
-                  />
-                ))}
+              <Box sx={{ m: 2 }}>
+                <Typography
+                  gutterBottom
+                  variant="body1"
+                  sx={{
+                    fontSize: "1.4rem",
+                    textAlign: { xxs: "center", xs: "left" },
+                  }}
+                >
+                  Directors
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    gap: "10px",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    flexDirection: { xs: "row", xxs: "column" },
+                  }}
+                >
+                  {aggregateData.creators.directors[0].credits.map(
+                    (director) => (
+                      <Chip
+                        key={director.name.id}
+                        label={director.name.nameText.text}
+                        sx={{
+                          backgroundColor: "primary.main",
+                          color: "white",
+                        }}
+                      />
+                    )
+                  )}
+                </Box>
               </Box>
-            </Box>
-          </>
-        )}
+            </>
+          )}
+        {Array.isArray(aggregateData.creators.writers) &&
+          aggregateData.creators.writers.length > 0 && (
+            <>
+              <Divider variant="middle" />
+
+              <Box sx={{ m: 2 }}>
+                <Typography
+                  gutterBottom
+                  variant="body1"
+                  sx={{
+                    fontSize: "1.4rem",
+                    textAlign: { xxs: "center", xs: "left" },
+                  }}
+                >
+                  Writers
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    gap: "10px",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    flexDirection: { xs: "row", xxs: "column" },
+                  }}
+                >
+                  {aggregateData.creators.writers[0].credits.map((writer) => (
+                    <Chip
+                      key={writer.name.id}
+                      label={writer.name.nameText.text}
+                      sx={{
+                        backgroundColor: "primary.main",
+                        color: "white",
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            </>
+          )}
         <Divider variant="middle" />
         <Box
           sx={{
@@ -197,7 +297,7 @@ function Detail() {
                 ...numberStyle,
               }}
             >
-              {data.nominations?.total || "N/A"}
+              {aggregateData.nominations?.total || "N/A"}
             </Typography>
           </Box>
 
@@ -220,7 +320,7 @@ function Detail() {
               variant="span"
               sx={{ fontSize: "1.2rem", ...numberStyle }}
             >
-              {data.wins?.total || "N/A"}
+              {aggregateData.wins?.total || "N/A"}
             </Typography>
           </Box>
         </Box>

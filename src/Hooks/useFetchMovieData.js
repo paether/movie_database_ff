@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react";
 
 import axiosInstance from "../api";
 
-function useFetchMovieData(url) {
+function useFetchMovieData(url, paramInfos) {
   const initialState = {
     error: undefined,
     data: undefined,
@@ -26,36 +26,25 @@ function useFetchMovieData(url) {
   useEffect(() => {
     if (!url) return;
 
-    const getMovieData = (info) => {
-      return axiosInstance.get(url, {
-        params: {
-          info: info,
-        },
-      });
-    };
-
     const fetchData = async () => {
       dispatch({ type: "loading" });
 
       try {
-        //based on API documentation these information can only be gathered from seperate endpoints
-        const [rating, awards, baseInfo, creators] = await Promise.all([
-          getMovieData("rating"),
-          getMovieData("awards"),
-          getMovieData("base_info"),
-          getMovieData("creators_directors_writers"),
-        ]);
-        const aggregateData = {
-          rating: rating.data.results.ratingsSummary,
-          wins: awards.data.results.wins,
-          nominations: awards.data.results.nominations,
-          plot: baseInfo.data.results.plot?.plotText?.plainText,
-          title: baseInfo.data.results.titleText?.text,
-          imageUrl: baseInfo.data.results.primaryImage?.url,
-          creators: creators.data.results,
-          genres: baseInfo.data.results.genres?.genres,
-        };
-        dispatch({ type: "fetched", payload: aggregateData });
+        let response;
+        if (Array.isArray(paramInfos) && paramInfos.length > 0) {
+          const requests = paramInfos.map((info) => {
+            return axiosInstance.get(url, {
+              params: {
+                info: info,
+              },
+            });
+          });
+          response = await Promise.all(requests);
+        } else {
+          response = await axiosInstance.get(url);
+        }
+
+        dispatch({ type: "fetched", payload: response });
       } catch (error) {
         dispatch({ type: "error", payload: error });
       }

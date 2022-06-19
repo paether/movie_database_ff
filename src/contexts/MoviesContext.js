@@ -4,7 +4,7 @@ import { MoviesReducer } from "./MoviesReducer";
 
 const initialState = {
   searchResult: [],
-  watchList: [],
+  watchList: JSON.parse(localStorage.getItem("watchList")) || [],
 };
 
 export const MoviesContext = createContext();

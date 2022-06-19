@@ -2,10 +2,15 @@ import "./App.css";
 import { Routes, Route, HashRouter, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CircularProgress from "@mui/material/CircularProgress";
+import InformationCard from "./components/InformationCard";
+
+import Box from "@mui/material/Box";
 
 import axiosInstance from "./api";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
+import useFetchMovieData from "./hooks/useFetchMovieData";
 
 const theme = createTheme({
   palette: {
@@ -32,27 +37,26 @@ const theme = createTheme({
 });
 
 function App() {
-  const [genres, setGenres] = useState([]);
+  const { data, error } = useFetchMovieData("/titles/utils/genres");
 
-  //populate the Genre dropdown from the database
-  async function getGenres() {
-    const resp = await axiosInstance.get("/titles/utils/genres");
-    setGenres(resp.data.results);
+  if (error) {
+    return <InformationCard information={"Cannot get movie genres!"} />;
   }
-
-  useEffect(() => {
-    getGenres();
-  }, []);
-
+  if (!data) {
+    return <CircularProgress />;
+  }
   // im using HashRouter instead of BrowserRouter because GitHub Pages
   // doesn’t support the HTML5 pushState history API
   return (
     <ThemeProvider theme={theme}>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Home genres={genres} />} />
+          <Route path="/" element={<Home genres={data.data.results} />} />
           <Route path="/:id" element={<Detail />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route
+            path="*"
+            element={<InformationCard information={"404 - Not Found!"} />}
+          />
         </Routes>
       </HashRouter>
     </ThemeProvider>

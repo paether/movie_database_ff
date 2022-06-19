@@ -1,4 +1,8 @@
 export const MoviesReducer = (state, action) => {
+  const updateLocalstorage = (watchList) => {
+    localStorage.setItem("watchList", JSON.stringify(watchList));
+  };
+
   switch (action.type) {
     case "UPDATE_SEARCH_RESULT":
       return {
@@ -12,6 +16,8 @@ export const MoviesReducer = (state, action) => {
         sourceClone.splice(action.payload.endIndex, 0, removed);
         const newState = { ...state };
         newState[action.payload.sourceIndex] = sourceClone;
+
+        updateLocalstorage(newState["watchList"]);
 
         return newState;
       };
@@ -31,6 +37,8 @@ export const MoviesReducer = (state, action) => {
         result[action.payload.droppableSource.droppableId] = sourceClone;
         result[action.payload.droppableDestination.droppableId] = destClone;
 
+        updateLocalstorage(result["watchList"]);
+
         return result;
       };
 
@@ -43,6 +51,8 @@ export const MoviesReducer = (state, action) => {
           action.payload.startIndex,
           1
         );
+
+        updateLocalstorage(newState["watchList"]);
 
         return newState;
       };
