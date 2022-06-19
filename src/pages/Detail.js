@@ -61,6 +61,37 @@ function Detail() {
     padding: "5px",
   };
 
+  const DetailChipsContainer = ({ header, children }) => {
+    return (
+      <>
+        <Divider variant="middle" />
+        <Box sx={{ m: 2 }}>
+          <Typography
+            gutterBottom
+            variant="body1"
+            sx={{
+              fontSize: "1.4rem",
+              textAlign: { xxs: "center", xs: "left" },
+            }}
+          >
+            {header}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              gap: "10px",
+              alignItems: "center",
+              flexWrap: "wrap",
+              flexDirection: { xs: "row", xxs: "column" },
+            }}
+          >
+            {children}
+          </Box>
+        </Box>
+      </>
+    );
+  };
   return (
     <Box
       sx={{
@@ -161,7 +192,7 @@ function Detail() {
               gap: "10px",
               alignItems: "center",
               flexWrap: "wrap",
-              flexDirection: { xs: "row", xxs: "column" },
+              flexDirection: "row",
               pt: "10px",
               pb: "10px",
             }}
@@ -185,85 +216,33 @@ function Detail() {
         </Box>
         {Array.isArray(aggregateData.creators.directors) &&
           aggregateData.creators.directors.length > 0 && (
-            <>
-              <Divider variant="middle" />
-
-              <Box sx={{ m: 2 }}>
-                <Typography
-                  gutterBottom
-                  variant="body1"
+            <DetailChipsContainer header="Directors">
+              {aggregateData.creators.directors[0].credits.map((director) => (
+                <Chip
+                  key={director.name.id}
+                  label={director.name.nameText.text}
                   sx={{
-                    fontSize: "1.4rem",
-                    textAlign: { xxs: "center", xs: "left" },
+                    backgroundColor: "primary.main",
+                    color: "white",
                   }}
-                >
-                  Directors
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    gap: "10px",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    flexDirection: { xs: "row", xxs: "column" },
-                  }}
-                >
-                  {aggregateData.creators.directors[0].credits.map(
-                    (director) => (
-                      <Chip
-                        key={director.name.id}
-                        label={director.name.nameText.text}
-                        sx={{
-                          backgroundColor: "primary.main",
-                          color: "white",
-                        }}
-                      />
-                    )
-                  )}
-                </Box>
-              </Box>
-            </>
+                />
+              ))}
+            </DetailChipsContainer>
           )}
         {Array.isArray(aggregateData.creators.writers) &&
           aggregateData.creators.writers.length > 0 && (
-            <>
-              <Divider variant="middle" />
-
-              <Box sx={{ m: 2 }}>
-                <Typography
-                  gutterBottom
-                  variant="body1"
+            <DetailChipsContainer header="Writers">
+              {aggregateData.creators.writers[0].credits.map((writer) => (
+                <Chip
+                  key={writer.name.id}
+                  label={writer.name.nameText.text}
                   sx={{
-                    fontSize: "1.4rem",
-                    textAlign: { xxs: "center", xs: "left" },
+                    backgroundColor: "primary.main",
+                    color: "white",
                   }}
-                >
-                  Writers
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    gap: "10px",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    flexDirection: { xs: "row", xxs: "column" },
-                  }}
-                >
-                  {aggregateData.creators.writers[0].credits.map((writer) => (
-                    <Chip
-                      key={writer.name.id}
-                      label={writer.name.nameText.text}
-                      sx={{
-                        backgroundColor: "primary.main",
-                        color: "white",
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            </>
+                />
+              ))}
+            </DetailChipsContainer>
           )}
         <Divider variant="middle" />
         <Box
