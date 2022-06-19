@@ -4,7 +4,7 @@ import { MoviesReducer } from "./MoviesReducer";
 
 const initialState = {
   searchResult: [],
-  toWatch: [],
+  watchList: [],
 };
 
 export const MoviesContext = createContext();

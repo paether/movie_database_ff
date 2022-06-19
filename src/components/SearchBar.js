@@ -41,10 +41,10 @@ export default function SearchBar({ genres, updateSearchResult }) {
           updateSearchResult("No movies found!");
           return;
         }
-        //filter out those movies which are already in the "My Movies" list
+        //filter out those movies which are already in the WatchList
         const filteredResults = resp.data.results.filter((item) => {
-          return !state["toWatch"].find(
-            (toWatchItem) => toWatchItem.id === item.id
+          return !state["watchList"].find(
+            (watchListItem) => watchListItem.id === item.id
           );
         });
         updateSearchResult(filteredResults);

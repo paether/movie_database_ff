@@ -35,24 +35,24 @@ function Home({ genres }) {
     <>
       <Box
         sx={{
-          backgroundColor: "#e29e20",
+          backgroundColor: "secondary.main",
           p: "10px",
           borderTopLeftRadius: "10px",
           borderTopRightRadius: "10px",
           fontSize: { xs: "1rem", sm: "2rem" },
           fontWeight: "700",
           boxShadow: "10px 10px 0px 4px rgb(189 80 3);",
-          color: "#002127",
+          color: "primary.main",
         }}
       >
-        My Movie List
+        My Watchlist
       </Box>
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#e29e20",
+          backgroundColor: "secondary.main",
           flexDirection: "column",
           padding: { lg: "30px 0 0 0", sm: "10px" },
           margin: "0 20px",
@@ -102,7 +102,7 @@ function Home({ genres }) {
                     fontSize: { xxs: "1rem", xs: "1.5rem", md: "2rem" },
                   }}
                 >
-                  {key === "toWatch" ? "Watchlist" : "Movies"}
+                  {key === "watchList" ? "Watchlist" : "Movies"}
                 </Typography>
                 <MovieList
                   listData={state[key]}

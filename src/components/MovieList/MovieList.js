@@ -50,7 +50,7 @@ const MovieList = ({ type, listData }) => {
                     )}
                   </Draggable>
                 ))
-              ) : type === "toWatch" ? (
+              ) : type === "watchList" ? (
                 <Box
                   sx={{
                     textAlign: "center",

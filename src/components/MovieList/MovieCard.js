@@ -39,12 +39,12 @@ const MovieCard = ({
     >
       <Box>
         <CardContent sx={{ padding: "10px" }}>
-          {type === "toWatch" && (
+          {type === "watchList" && (
             <Typography
               variant="h6"
               component="span"
               sx={{
-                backgroundColor: "#00414c",
+                backgroundColor: "primary.main",
                 color: "white",
                 padding: "5px",
                 borderRadius: "5px",
@@ -71,7 +71,7 @@ const MovieCard = ({
           >
             Details
           </Button>
-          {type === "toWatch" && (
+          {type === "watchList" && (
             <Button onClick={onClickDelete} size="small">
               delete
             </Button>
