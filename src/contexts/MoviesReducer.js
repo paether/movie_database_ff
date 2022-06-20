@@ -1,8 +1,8 @@
-export const MoviesReducer = (state, action) => {
-  const updateLocalstorage = (watchList) => {
-    localStorage.setItem("watchList", JSON.stringify(watchList));
-  };
+const updateLocalstorage = (watchList) => {
+  localStorage.setItem("watchList", JSON.stringify(watchList));
+};
 
+export const MoviesReducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_SEARCH_RESULT":
       return {

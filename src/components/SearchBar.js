@@ -1,5 +1,4 @@
-import { useState, useCallback, useContext } from "react";
-
+import { useState, useCallback } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -9,14 +8,57 @@ import Button from "@mui/material/Button";
 import { Search } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
-import { MoviesContext } from "../contexts/MoviesContext";
 import axiosInstance from "../api";
 
-export default function SearchBar({ genres, updateSearchResult }) {
+const inputStyle = {
+  borderColor: "secondary.main",
+  color: "secondary.main",
+  multilineColor: "secondary.main",
+  ".Mui-focused": {
+    color: "secondary.main",
+  },
+  "&.Mui-focused": {
+    color: "secondary.main",
+  },
+  ".MuiFormControl-root": {
+    borderColor: "secondary.main",
+    color: "secondary.main",
+  },
+  ".MuiOutlinedInput-root": {
+    color: "secondary.main",
+    "&:hover fieldset": {
+      borderColor: "darkOrange.main",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "darkOrange.main",
+    },
+  },
+  ".MuiOutlinedInput-notchedOutline": {
+    borderColor: "secondary.main",
+    borderWidth: "2px",
+  },
+  ".notchedOutline": {
+    borderColor: "secondary.main",
+  },
+  ":hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: "secondary.main",
+  },
+
+  ".MuiSelect-icon": {
+    color: "secondary.main",
+  },
+
+  ".MuiInputBase-root-MuiOutlinedInput-root": {
+    borderColor: "secondary.main",
+  },
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: "darkOrange.main",
+  },
+};
+
+export default function SearchBar({ genres, updateSearchResult, state }) {
   const [genreFilter, setGenreFilter] = useState("");
   const [titleFilter, setTitleFilter] = useState("");
-
-  const { state } = useContext(MoviesContext);
 
   const handleGenreChange = (event) => {
     setGenreFilter(event.target.value);
@@ -54,52 +96,6 @@ export default function SearchBar({ genres, updateSearchResult }) {
     },
     [titleFilter, genreFilter, updateSearchResult, state]
   );
-
-  const inputStyle = {
-    borderColor: "secondary.main",
-    color: "secondary.main",
-    multilineColor: "secondary.main",
-    ".Mui-focused": {
-      color: "secondary.main",
-    },
-    "&.Mui-focused": {
-      color: "secondary.main",
-    },
-    ".MuiFormControl-root": {
-      borderColor: "secondary.main",
-      color: "secondary.main",
-    },
-    ".MuiOutlinedInput-root": {
-      color: "secondary.main",
-      "&:hover fieldset": {
-        borderColor: "darkOrange.main",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "darkOrange.main",
-      },
-    },
-    ".MuiOutlinedInput-notchedOutline": {
-      borderColor: "secondary.main",
-      borderWidth: "2px",
-    },
-    ".notchedOutline": {
-      borderColor: "secondary.main",
-    },
-    ":hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "secondary.main",
-    },
-
-    ".MuiSelect-icon": {
-      color: "secondary.main",
-    },
-
-    ".MuiInputBase-root-MuiOutlinedInput-root": {
-      borderColor: "secondary.main",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "darkOrange.main",
-    },
-  };
 
   return (
     <Box
@@ -164,7 +160,6 @@ export default function SearchBar({ genres, updateSearchResult }) {
         variant="outlined"
         onKeyPress={(ev) => {
           if (ev.key === "Enter") {
-            // Do code here
             ev.preventDefault();
             getTitle();
           }

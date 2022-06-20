@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,13 +9,19 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
 import StarIcon from "@mui/icons-material/Star";
+import { motion } from "framer-motion";
 
 import InformationCard from "../components/InformationCard";
 import useFetchMovieData from "../hooks/useFetchMovieData";
-import { motion } from "framer-motion";
+
+const numberStyle = {
+  backgroundColor: "primary.main",
+  color: "white",
+  borderRadius: "5px",
+  padding: "5px",
+};
 
 function Detail() {
-  let aggregateData;
   const { id } = useParams();
   const { data, error } = useFetchMovieData(`/titles/${id}`, [
     "rating",
@@ -25,6 +32,23 @@ function Detail() {
 
   const navigate = useNavigate();
 
+  const aggregateData = useMemo(() => {
+    if (!data) return null;
+    const [rating, awards, baseInfo, creators] = data;
+
+    return {
+      rating: rating.data.results?.ratingsSummary,
+      wins: awards.data.results?.wins,
+      nominations: awards.data.results?.nominations,
+      plot: baseInfo.data.results?.plot?.plotText?.plainText,
+      title: baseInfo.data.results?.titleText?.text,
+      releaseYear: baseInfo.data.results?.releaseYear?.year,
+      imageUrl: baseInfo.data.results?.primaryImage?.url,
+      creators: creators.data.results,
+      genres: baseInfo.data.results?.genres?.genres,
+    };
+  }, [data]);
+
   if (error) {
     const idPattern = /^\w{2}\d{7}/;
     const information = !idPattern.test(id)
@@ -34,32 +58,9 @@ function Detail() {
     return <InformationCard information={information} />;
   }
 
-  if (!data) {
+  if (!aggregateData) {
     return <CircularProgress />;
   }
-
-  if (data) {
-    let [rating, awards, baseInfo, creators] = data;
-    aggregateData = {
-      rating: rating.data.results?.ratingsSummary || "",
-      wins: awards.data.results?.wins,
-      nominations: awards.data.results?.nominations,
-      plot: baseInfo.data.results?.plot?.plotText?.plainText,
-      title: baseInfo.data.results?.titleText?.text,
-      releaseYear: baseInfo.data.results?.releaseYear?.year,
-
-      imageUrl: baseInfo.data.results?.primaryImage?.url,
-      creators: creators.data.results,
-      genres: baseInfo.data.results?.genres?.genres,
-    };
-  }
-
-  const numberStyle = {
-    backgroundColor: "primary.main",
-    color: "white",
-    borderRadius: "5px",
-    padding: "5px",
-  };
 
   const DetailChipsContainer = ({ header, children }) => {
     return (
@@ -202,6 +203,7 @@ function Detail() {
             }}
           >
             {Array.isArray(aggregateData.genres) &&
+              aggregateData.genres.length > 0 &&
               aggregateData.genres.map((genre) => (
                 <Chip
                   key={genre.id}
@@ -219,7 +221,7 @@ function Detail() {
             {aggregateData.plot || "No plot available"}
           </Typography>
         </Box>
-        {Array.isArray(aggregateData.creators.directors) &&
+        {Array.isArray(aggregateData.creators?.directors) &&
           aggregateData.creators.directors.length > 0 && (
             <DetailChipsContainer header="Directors">
               {aggregateData.creators.directors[0].credits.map((director) => (
@@ -234,7 +236,7 @@ function Detail() {
               ))}
             </DetailChipsContainer>
           )}
-        {Array.isArray(aggregateData.creators.writers) &&
+        {Array.isArray(aggregateData.creators?.writers) &&
           aggregateData.creators.writers.length > 0 && (
             <DetailChipsContainer header="Writers">
               {aggregateData.creators.writers[0].credits.map((writer) => (

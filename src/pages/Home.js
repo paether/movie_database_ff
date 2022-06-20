@@ -1,12 +1,12 @@
-import { useState, useContext, useCallback } from "react";
+import { useContext, useCallback } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { motion } from "framer-motion";
 
 import MovieList from "../components/MovieList/MovieList";
 import SearchBar from "../components/SearchBar";
 import { MoviesContext } from "../contexts/MoviesContext";
-import { motion } from "framer-motion";
 
 function Home({ genres }) {
   const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
@@ -79,6 +79,7 @@ function Home({ genres }) {
           {...{
             genres,
             updateSearchResult,
+            state,
           }}
         />
 
@@ -119,7 +120,7 @@ function Home({ genres }) {
                 <MovieList
                   listData={state[key]}
                   type={key}
-                  onClickDelete={deleteCard}
+                  deleteCard={deleteCard}
                 />
               </Box>
             ))}

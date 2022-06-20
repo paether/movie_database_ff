@@ -1,18 +1,14 @@
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SwipeRightIcon from "@mui/icons-material/SwipeRight";
 
 import MovieCard from "./MovieCard";
-import { MoviesContext } from "../../contexts/MoviesContext";
 
-const MovieList = ({ type, listData }) => {
-  const { deleteCard } = useContext(MoviesContext);
-
+const MovieList = ({ type, listData, deleteCard }) => {
   return (
     <Droppable droppableId={type}>
-      {(provided, snapshot) => (
+      {(provided) => (
         <>
           <Box
             sx={{

@@ -1,9 +1,9 @@
-import "./App.css";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-import InformationCard from "./components/InformationCard";
 
+import "./App.css";
+import InformationCard from "./components/InformationCard";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import useFetchMovieData from "./hooks/useFetchMovieData";
