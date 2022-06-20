@@ -1,13 +1,9 @@
 import "./App.css";
-import { Routes, Route, HashRouter, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import InformationCard from "./components/InformationCard";
 
-import Box from "@mui/material/Box";
-
-import axiosInstance from "./api";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import useFetchMovieData from "./hooks/useFetchMovieData";

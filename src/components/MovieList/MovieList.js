@@ -24,6 +24,8 @@ const MovieList = ({ type, listData }) => {
               position: "relative",
               borderBottomRightRadius: "10px",
               borderBottomLeftRadius: "10px",
+              overflowX: "hidden",
+              overflowY: "auto",
             }}
             ref={provided.innerRef}
             {...provided.droppableProps}

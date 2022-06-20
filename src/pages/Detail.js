@@ -11,6 +11,7 @@ import StarIcon from "@mui/icons-material/Star";
 
 import InformationCard from "../components/InformationCard";
 import useFetchMovieData from "../hooks/useFetchMovieData";
+import { motion } from "framer-motion";
 
 function Detail() {
   let aggregateData;
@@ -51,7 +52,6 @@ function Detail() {
       creators: creators.data.results,
       genres: baseInfo.data.results?.genres?.genres,
     };
-    console.log(creators);
   }
 
   const numberStyle = {
@@ -101,6 +101,10 @@ function Detail() {
         flexDirection: "column",
         margin: "10px",
       }}
+      component={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
     >
       <Button
         size="medium"
@@ -148,7 +152,7 @@ function Detail() {
             />
           </Box>
         ) : (
-          <TheatersIcon sx={{ fontSize: "350px" }} />
+          <TheatersIcon sx={{ fontSize: "200px", width: "100%" }} />
         )}
         <Box sx={{ my: 3, mx: 2 }}>
           <Box
@@ -197,18 +201,19 @@ function Detail() {
               pb: "10px",
             }}
           >
-            {aggregateData.genres.map((genre) => (
-              <Chip
-                key={genre.id}
-                label={genre.text}
-                sx={{
-                  backgroundColor: "transparent",
-                  color: "text.secondary",
-                  borderColor: "text.secondary",
-                  border: "1px solid",
-                }}
-              />
-            ))}
+            {Array.isArray(aggregateData.genres) &&
+              aggregateData.genres.map((genre) => (
+                <Chip
+                  key={genre.id}
+                  label={genre.text}
+                  sx={{
+                    backgroundColor: "transparent",
+                    color: "text.secondary",
+                    borderColor: "text.secondary",
+                    border: "1px solid",
+                  }}
+                />
+              ))}
           </Box>
           <Typography color="text.secondary" variant="body2">
             {aggregateData.plot || "No plot available"}
