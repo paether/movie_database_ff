@@ -40,7 +40,9 @@ const MovieList = ({ type, listData, deleteCard }) => {
                       <MovieCard
                         snapshot={snapshot}
                         provided={provided}
-                        onClickDelete={() => deleteCard(type, index)}
+                        onClickDelete={() => {
+                          deleteCard(type, index);
+                        }}
                         type={type}
                         index={index}
                         item={item}

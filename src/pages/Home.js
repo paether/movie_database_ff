@@ -1,4 +1,4 @@
-import { useContext, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -6,11 +6,21 @@ import { motion } from "framer-motion";
 
 import MovieList from "../components/MovieList/MovieList";
 import SearchBar from "../components/SearchBar";
-import { MoviesContext } from "../contexts/MoviesContext";
+import { useStore } from "../store";
+import updateLocalstorage from "../utils/localStorage";
 
 function Home({ genres }) {
-  const { state, deleteCard, updateSearchResult, reorderCards, moveCard } =
-    useContext(MoviesContext);
+  const watchList = useStore((state) => state.watchList);
+  const searchResult = useStore((state) => state.searchResult);
+
+  const reorderCards = useStore((state) => state.reorderCards);
+  const moveCard = useStore((state) => state.moveCard);
+  const updateSearchResult = useStore((state) => state.updateSearchResult);
+  const deleteCard = useStore((state) => state.deleteCard);
+
+  useEffect(() => {
+    updateLocalstorage(watchList);
+  }, [watchList]);
 
   //event handler when user drops the card
   const onDragEnd = useCallback(
@@ -31,7 +41,6 @@ function Home({ genres }) {
     },
     [moveCard, reorderCards]
   );
-
   return (
     <Box
       sx={{
@@ -79,7 +88,6 @@ function Home({ genres }) {
           {...{
             genres,
             updateSearchResult,
-            state,
           }}
         />
 
@@ -93,7 +101,7 @@ function Home({ genres }) {
           }}
         >
           <DragDropContext onDragEnd={onDragEnd}>
-            {Object.keys(state).map((key) => (
+            {["searchResult", "watchList"].map((key) => (
               <Box
                 key={key}
                 sx={{
@@ -118,7 +126,7 @@ function Home({ genres }) {
                   {key === "watchList" ? "Watchlist" : "Movies"}
                 </Typography>
                 <MovieList
-                  listData={state[key]}
+                  listData={key === "watchList" ? watchList : searchResult}
                   type={key}
                   deleteCard={deleteCard}
                 />
