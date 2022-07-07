@@ -9,6 +9,7 @@ import { Search } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
 import axiosInstance from "../api";
+import { useStore } from "../store";
 
 const inputStyle = {
   borderColor: "secondary.main",
@@ -56,7 +57,9 @@ const inputStyle = {
   },
 };
 
-export default function SearchBar({ genres, updateSearchResult, state }) {
+export default function SearchBar({ genres, updateSearchResult }) {
+  const watchList = useStore((state) => state.watchList);
+
   const [genreFilter, setGenreFilter] = useState("");
   const [titleFilter, setTitleFilter] = useState("");
 
@@ -67,6 +70,7 @@ export default function SearchBar({ genres, updateSearchResult, state }) {
   const getTitle = useCallback(
     async (e) => {
       if (!titleFilter) return;
+
       try {
         const resp = await axiosInstance.get(
           `/titles/search/title/${titleFilter}`,
@@ -78,23 +82,24 @@ export default function SearchBar({ genres, updateSearchResult, state }) {
             },
           }
         );
-
         if (resp.data.results?.length === 0) {
           updateSearchResult("No movies found!");
           return;
         }
+
         //filter out those movies which are already in the WatchList
         const filteredResults = resp.data.results.filter((item) => {
-          return !state["watchList"].find(
+          return !watchList.find(
             (watchListItem) => watchListItem.id === item.id
           );
         });
+
         updateSearchResult(filteredResults);
       } catch (error) {
         console.log(error);
       }
     },
-    [titleFilter, genreFilter, updateSearchResult, state]
+    [titleFilter, genreFilter, updateSearchResult, watchList]
   );
 
   return (
@@ -130,6 +135,7 @@ export default function SearchBar({ genres, updateSearchResult, state }) {
             value={genreFilter}
             label="Genre"
             onChange={handleGenreChange}
+            inputProps={{ "data-testid": "genre" }}
             labelId="genre-select-label"
             id="genre-select"
             sx={inputStyle}
