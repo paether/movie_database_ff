@@ -6,7 +6,7 @@ import "./App.css";
 import InformationCard from "./components/InformationCard";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
-import useFetchMovieData from "./hooks/useFetchMovieData";
+import useGenres from "./hooks/useGenres";
 
 const theme = createTheme({
   palette: {
@@ -33,12 +33,12 @@ const theme = createTheme({
 });
 
 function App() {
-  const { data, error } = useFetchMovieData("/titles/utils/genres");
+  const { data, isError, isLoading } = useGenres();
 
-  if (error) {
+  if (isError) {
     return <InformationCard information={"Cannot get movie genres!"} />;
   }
-  if (!data) {
+  if (isLoading) {
     return <CircularProgress />;
   }
   // im using HashRouter instead of BrowserRouter because GitHub Pages
@@ -47,7 +47,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Home genres={data.data.results} />} />
+          <Route path="/" element={<Home genres={data.results} />} />
           <Route path="/:id" element={<Detail />} />
           <Route
             path="*"
