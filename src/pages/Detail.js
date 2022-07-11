@@ -5,14 +5,15 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 import StarIcon from "@mui/icons-material/Star";
 import { motion } from "framer-motion";
 
 import InformationCard from "../components/InformationCard";
-import useFetchMovieData from "../hooks/useFetchMovieData";
+import useMovieData from "../hooks/useMovieData";
+import DetailChipsContainer from "../components/DetailsChipContainer";
 
 const numberStyle = {
   backgroundColor: "primary.main",
@@ -23,7 +24,7 @@ const numberStyle = {
 
 function Detail() {
   const { id } = useParams();
-  const { data, error } = useFetchMovieData(`/titles/${id}`, [
+  const { data, isError, isLoading } = useMovieData(id, [
     "rating",
     "awards",
     "base_info",
@@ -49,7 +50,7 @@ function Detail() {
     };
   }, [data]);
 
-  if (error) {
+  if (isError) {
     const idPattern = /^\w{2}\d{7}/;
     const information = !idPattern.test(id)
       ? "Invalid Movie ID!"
@@ -58,41 +59,10 @@ function Detail() {
     return <InformationCard information={information} />;
   }
 
-  if (!aggregateData) {
+  if (isLoading) {
     return <CircularProgress />;
   }
 
-  const DetailChipsContainer = ({ header, children }) => {
-    return (
-      <>
-        <Divider variant="middle" />
-        <Box sx={{ m: 2 }}>
-          <Typography
-            gutterBottom
-            variant="body1"
-            sx={{
-              fontSize: "1.4rem",
-              textAlign: { xxs: "center", xs: "left" },
-            }}
-          >
-            {header}
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              gap: "10px",
-              alignItems: "center",
-              flexWrap: "wrap",
-              flexDirection: { xs: "row", xxs: "column" },
-            }}
-          >
-            {children}
-          </Box>
-        </Box>
-      </>
-    );
-  };
   return (
     <Box
       sx={{
