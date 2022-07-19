@@ -9,7 +9,7 @@ import { Search } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
 import axiosInstance from "../api";
-import { useStore } from "../store";
+import { useStore } from "../stores/movieStore";
 
 const inputStyle = {
   borderColor: "secondary.main",
