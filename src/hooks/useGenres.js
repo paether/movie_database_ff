@@ -3,6 +3,7 @@ import axiosInstance from "../api";
 
 const getGenres = async () => {
   const { data } = await axiosInstance.get("/titles/utils/genres");
+
   return data;
 };
 
