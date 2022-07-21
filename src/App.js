@@ -41,6 +41,7 @@ function App() {
   if (isLoading) {
     return <CircularProgress />;
   }
+
   // im using HashRouter instead of BrowserRouter because GitHub Pages
   // doesn’t support the HTML5 pushState history API
   return (

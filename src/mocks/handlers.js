@@ -1,4 +1,5 @@
 import { rest } from "msw";
+import { mockDetailData } from "../test/fixtures";
 
 export const handlers = [
   rest.get(
@@ -10,7 +11,7 @@ export const handlers = [
           ctx.json({
             results: [
               {
-                id: "tt0208092",
+                id: "validID",
                 ratingsSummary: {
                   aggregateRating: 8.3,
                   voteCount: 839073,
@@ -137,6 +138,17 @@ export const handlers = [
           ],
         })
       );
+    }
+  ),
+  rest.get(
+    process.env.REACT_APP_RAPIDAPI_BASE_URL + "titles/:id",
+    (req, res, ctx) => {
+      if (req.params.id === "invalidID") {
+        return res(ctx.status(500));
+      }
+      if (req.params.id === "validID") {
+        return res(ctx.json(mockDetailData[req.url.searchParams.get("info")]));
+      }
     }
   ),
 ];

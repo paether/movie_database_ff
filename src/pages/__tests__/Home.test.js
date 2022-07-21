@@ -2,10 +2,13 @@ import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
-import { server } from "./mocks/server";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { server } from "../../mocks/server";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import App from "./App";
+import Home from "../Home";
+import { genres } from "../../test/fixtures";
+import Detail from "../Detail";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +22,7 @@ describe("Search for movies", () => {
     act(() => {
       render(
         <QueryClientProvider client={queryClient}>
-          <App />
+          <Home genres={genres} />
         </QueryClientProvider>
       );
     });
@@ -34,13 +37,18 @@ describe("Search for movies", () => {
     expect(genreFilter).toHaveLength(2);
   });
 
-  it("finds a movie", async () => {
+  it("finds a movie and navigates to Detail tab", async () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       render(
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
+        <MemoryRouter initialEntries={["/"]}>
+          <QueryClientProvider client={queryClient}>
+            <Routes>
+              <Route path="/" element={<Home genres={genres} />} />
+              <Route path="/:id" element={<Detail />} />
+            </Routes>
+          </QueryClientProvider>
+        </MemoryRouter>
       );
     });
 
@@ -57,5 +65,13 @@ describe("Search for movies", () => {
     await waitFor(() => {
       expect(screen.getByText(/Snatch/i)).toBeInTheDocument();
     });
+
+    const detailsButton = screen.getByText(/Details/i);
+
+    userEvent.click(detailsButton);
+
+    const backButton = await screen.findByText(/back/i);
+
+    expect(backButton).toBeInTheDocument();
   });
 });

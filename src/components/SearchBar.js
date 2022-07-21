@@ -152,11 +152,14 @@ export default function SearchBar({ genres, updateSearchResult }) {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {genres.map((genre, i) => (
-              <MenuItem key={i} value={genre}>
-                {genre}
-              </MenuItem>
-            ))}
+            {genres.map(
+              (genre, i) =>
+                genre && (
+                  <MenuItem key={i} value={genre}>
+                    {genre}
+                  </MenuItem>
+                )
+            )}
           </Select>
         </FormControl>
       </Box>
