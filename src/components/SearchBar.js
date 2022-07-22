@@ -9,7 +9,7 @@ import { Search } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
 import axiosInstance from "../api";
-import { useStore } from "../store";
+import { useStore } from "../stores/movieStore";
 
 const inputStyle = {
   borderColor: "secondary.main",
@@ -152,11 +152,14 @@ export default function SearchBar({ genres, updateSearchResult }) {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {genres.map((genre, i) => (
-              <MenuItem key={i} value={genre}>
-                {genre}
-              </MenuItem>
-            ))}
+            {genres.map(
+              (genre, i) =>
+                genre && (
+                  <MenuItem key={i} value={genre}>
+                    {genre}
+                  </MenuItem>
+                )
+            )}
           </Select>
         </FormControl>
       </Box>

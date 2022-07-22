@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 import MovieList from "../components/MovieList/MovieList";
 import SearchBar from "../components/SearchBar";
-import { useStore } from "../store";
+import { useStore } from "../stores/movieStore";
 import updateLocalstorage from "../utils/localStorage";
 
 function Home({ genres }) {

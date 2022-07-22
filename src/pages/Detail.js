@@ -36,7 +36,6 @@ function Detail() {
   const aggregateData = useMemo(() => {
     if (!data) return null;
     const [rating, awards, baseInfo, creators] = data;
-
     return {
       rating: rating.data.results?.ratingsSummary,
       wins: awards.data.results?.wins,
@@ -62,7 +61,6 @@ function Detail() {
   if (isLoading) {
     return <CircularProgress />;
   }
-
   return (
     <Box
       sx={{
